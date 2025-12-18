@@ -58,9 +58,9 @@ export function SidebarDashboard({ children }: { children: React.ReactNode }) {
             className="cursor-pointer"
           >
             {!isDesktopCollapsed ? (
-              <ChevronRight className="w-5 h-5 rotate-180 transition-all duration-300" />
+              <ChevronRight className="w-5 h-5 rotate-180 transition-all duration-500" />
             ) : (
-              <ChevronLeft className="w-5 h-5 rotate-180 transition-all duration-300" />
+              <ChevronLeft className="w-5 h-5 rotate-180 transition-all duration-500" />
             )}
           </Button>
         </div>

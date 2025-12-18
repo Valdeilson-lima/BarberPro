@@ -10,7 +10,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { LogIn, Menu } from "lucide-react";
+import { BookDashed, LayoutDashboard, LogIn, Menu } from "lucide-react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { handleRegister } from "../_actions/login";
@@ -18,6 +18,7 @@ import { handleRegister } from "../_actions/login";
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { data: session, status } = useSession();
+  console.log("Session data:", session);
 
   const navItems = [{ label: "Veja as Barbearias", href: "#barbearias" }];
 
@@ -49,8 +50,8 @@ export function Header() {
           href="/dashboard"
           className="text-white bg-primary/90 px-4 py-1.5 rounded-md hover:text-barber-gold hover:bg-primary/90 transition-colors font-medium text-center text-sm md:text-base cursor-pointer"
         > 
-          <LogIn className="w-4 h-4 mr-2 inline-block" />
-          Acessar Barbearia
+          <LayoutDashboard className="w-4 h-4 mr-2 inline-block" />
+          Acessar Dashboard
         </Link>
       ) : (
         <Button
