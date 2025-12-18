@@ -10,61 +10,59 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { LogIn, Menu } from "lucide-react";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { handleRegister } from "../_actions/login";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { data: session, status } = useSession();
 
-  const session = false; 
+  const navItems = [{ label: "Veja as Barbearias", href: "#barbearias" }];
 
-
-  const navItems = [
-    { label: "Barbearias", href: "#barbearias" },
-  ];
+  async function handleLogin() {
+    await handleRegister("github");
+  }
 
   const NavLinks = () => (
     <>
       {navItems.map((item) => (
         <Button
+          onClick={() => setIsMenuOpen(false)}
           key={item.href}
           asChild
-          className="text-white hover:text-barber-gold transition-colors font-medium"
-          onClick={() => setIsMenuOpen(false)}
+          className="text-white hover:text-barber-gold transition-colors font-medium cursor-pointer px-4 py-1.5 text-sm md:text-base"
         >
-          <Link href={item.href}>{item.label}</Link>
+          <Link href={item.href} className="text-base font-medium">
+            
+            {item.label}
+          </Link>
         </Button>
       ))}
 
-
-      {session ? (
-        <Button
-          asChild
-          className="text-white hover:text-barber-gold transition-colors font-medium"
-          onClick={() => {
-            // Add logout logic here
-            setIsMenuOpen(false);
-          }}
-        >
-          <Link href="/logout">Sair</Link>
-        </Button>
+      {status === "loading" ? (
+        <span className="text-white text-center">Carregando...</span>
+      ) : session ? (
+        
+        <Link
+          href="/dashboard"
+          className="text-white bg-primary/90 px-4 py-1.5 rounded-md hover:text-barber-gold hover:bg-primary/90 transition-colors font-medium text-center text-sm md:text-base cursor-pointer"
+        > 
+          <LogIn className="w-4 h-4 mr-2 inline-block" />
+          Acessar Barbearia
+        </Link>
       ) : (
         <Button
-          asChild
-          className="text-white hover:text-barber-gold transition-colors font-medium"
-          onClick={() => setIsMenuOpen(false)}
+          className="text-white hover:text-barber-gold transition-colors font-medium cursor-pointer px-4"
+          onClick={handleLogin}
         >
-          <Link href="/login">Acessar Minha Barbearia</Link>
+          <LogIn className="w-4 h-4 mr-2" />
+          Portal da Barbearia
         </Button>
       )}
-
-
-
-      
     </>
   );
-
- 
 
   return (
     <header className="fixed top-0 left-0 z-50 right-0 bg-barber-primary shadow-barber-gold/90 shadow-sm py-4 px-6">
@@ -105,7 +103,6 @@ export function Header() {
             <nav className="flex flex-col space-y-4 py-5 px-5">
               <NavLinks />
             </nav>
-
           </SheetContent>
         </Sheet>
       </div>
