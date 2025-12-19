@@ -3,12 +3,14 @@ import { redirect } from "next/navigation";
 
 export default async function HomePage() {
   const session = await getSession();
-  console.log("User session:", session);
+ 
 
   if (!session) {
     redirect("/");
    
   }
+
+  console.log("User session:", session?.user?.createdAt);
 
   return (
     <main>

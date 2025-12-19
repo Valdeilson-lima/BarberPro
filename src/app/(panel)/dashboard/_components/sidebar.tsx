@@ -27,6 +27,8 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import Image from "next/image";
+import logo from "../../../../../public/logo.svg";
 
 export function SidebarDashboard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -44,26 +46,33 @@ export function SidebarDashboard({ children }: { children: React.ReactNode }) {
           }
         )}
       >
-        <div className="flex items-center justify-between p-3 h-18 border-b border-barber-gold">
+        <div className="mb-6 mt-4">
           {!isDesktopCollapsed && (
-            <h1 className="text-2xl text-white font-bold">
-              Barber<span className="text-barber-gold-dark">PRÓ</span>
-            </h1>
+            <Image
+              src={logo}
+              alt="BarberPRÓ Logo"
+              priority
+              quality={100}
+              className="w-48 h-auto mx-auto"
+              
+            />
           )}
 
-          <Button
+          
+        </div>
+
+        <Button
             onClick={() => setIsDesktopCollapsed(!isDesktopCollapsed)}
-            variant={"outline"}
-            size={"icon"}
-            className="cursor-pointer"
+            variant="ghost"
+            size="icon"
+            className="bg-gray-100 hover:bg-gray-200 text-zinc-900 self-end mb-2 mr-5 p-2 rounded-full cursor-pointer"
           >
-            {!isDesktopCollapsed ? (
-              <ChevronRight className="w-5 h-5 rotate-180 transition-all duration-500" />
+            {isDesktopCollapsed ? (
+              <ChevronRight className="w-5 h-5" />
             ) : (
-              <ChevronLeft className="w-5 h-5 rotate-180 transition-all duration-500" />
+              <ChevronLeft className="w-5 h-5" />
             )}
           </Button>
-        </div>
 
         {isDesktopCollapsed && (
           <nav className="flex flex-col gap-3 p-4 text-base">
@@ -164,6 +173,7 @@ export function SidebarDashboard({ children }: { children: React.ReactNode }) {
                   variant={"outline"}
                   size={"icon"}
                   className="md:hidden cursor-pointer"
+                  onClick={() => setIsMobileOpen(false)}
                 >
                   <List className="w-5 h-5" />
                 </Button>

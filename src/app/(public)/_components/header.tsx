@@ -14,6 +14,8 @@ import { BookDashed, LayoutDashboard, LogIn, Menu } from "lucide-react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { handleRegister } from "../_actions/login";
+import Image from "next/image";
+import logo from "../../../../public/logo.svg";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -69,9 +71,13 @@ export function Header() {
     <header className="fixed top-0 left-0 z-50 right-0 bg-barber-primary shadow-barber-gold/90 shadow-sm py-4 px-6">
       <div className="container mx-auto flex items-center justify-between">
         <Link href="/">
-          <h1 className="text-3xl font-bold text-white ">
-            Barber<span className="text-barber-gold">Pró</span>
-          </h1>
+          <Image
+            src={logo}
+            alt="BarberPRÓ Logo"
+            priority
+            quality={100}
+            className="w-32 h-auto"
+          />
         </Link>
 
         <nav className="hidden md:flex items-center py-2 px-2 gap-6">
