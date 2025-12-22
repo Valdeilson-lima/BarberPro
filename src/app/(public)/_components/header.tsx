@@ -22,7 +22,7 @@ export function Header() {
   const { data: session, status } = useSession();
   console.log("Session data:", session);
 
-  const navItems = [{ label: "Veja as Barbearias", href: "#barbearias" }];
+  const navItems = [{ label: "Veja as Barbearias disponíveis", href: "#barbearias" }];
 
   async function handleLogin() {
     await handleRegister("github");
@@ -53,7 +53,7 @@ export function Header() {
           className="text-white bg-primary/90 px-4 py-1.5 rounded-md hover:text-barber-gold hover:bg-primary/90 transition-colors font-medium text-center text-sm md:text-base cursor-pointer"
         > 
           <LayoutDashboard className="w-4 h-4 mr-2 inline-block" />
-          Acessar Dashboard
+          Acessar Meu Dashboard
         </Link>
       ) : (
         <Button
@@ -61,7 +61,7 @@ export function Header() {
           onClick={handleLogin}
         >
           <LogIn className="w-4 h-4 mr-2" />
-          Portal da Barbearia
+          Portal da Minha Barbearia
         </Button>
       )}
     </>

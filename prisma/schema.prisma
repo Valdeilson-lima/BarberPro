@@ -42,10 +42,12 @@ model Reminder {
 }
 
 model Service {
-  id       String @id @default(cuid())
+  id       String  @id @default(cuid())
   name     String
+  description String
   duration Int
   price    Int
+  status   Boolean @default(true)
 
   userId       String
   user         User          @relation(fields: [userId], references: [id])
@@ -69,18 +71,17 @@ model Subscription {
 }
 
 model User {
-  id               String    @id @default(cuid())
-  name             String?
-  email            String    @unique
-  emailVerified    DateTime?
-  image            String?
-  address          String?
-  phone            String?
-  status           Boolean   @default(true)
-  timezone         String?
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  address       String?
+  phone         String?
+  timeZone         String?
   stripeCustomerId String?
   times            String[] @default([])
-
+  status   Boolean @default(true)
   accounts      Account[]
   sessions      Session[]
   Authenticator Authenticator[]

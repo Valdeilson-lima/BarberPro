@@ -10,12 +10,9 @@ export default async function Profile() {
   }
 
   const user = await getUserData({ userId: session.user?.id });
-  console.log("User Data:", user);
 
   if (!user) {
     redirect("/");
   }
-  return (
-    <ProfileContent />
-  );
+  return <ProfileContent user={user} />;
 }

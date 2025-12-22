@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SessionAuthProvider } from "../components/session.auth";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,7 +16,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "BarberPro - Agendamento de Serviços para Barbearias",
-  description: "Conectando você às melhores barbearias da sua região. Agende seu horário com facilidade e descubra serviços de qualidade perto de você.",
+  description:
+    "Conectando você às melhores barbearias da sua região. Agende seu horário com facilidade e descubra serviços de qualidade perto de você.",
 };
 
 export default function RootLayout({
@@ -29,7 +31,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SessionAuthProvider>
-        {children}
+          <Toaster position="top-right" duration={2500} />
+          {children}
         </SessionAuthProvider>
       </body>
     </html>
