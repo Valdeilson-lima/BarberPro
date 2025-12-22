@@ -59,7 +59,15 @@ export function ServicesList({ services }: ServicesListProps) {
   }
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+    <Dialog
+      open={isDialogOpen}
+      onOpenChange={(open) => {
+        setIsDialogOpen(open);
+        if (!open) {
+          setEditingService(null);
+        }
+      }}
+    >
       <section className="mx-auto ">
         <Card className="bg-barber-primary-light shadow-lg rounded-lg border-barber-gold-dark/20 border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -79,9 +87,9 @@ export function ServicesList({ services }: ServicesListProps) {
             <DialogContent
               className="sm:max-w-lg bg-barber-primary-dark border-barber-gold-dark/20 border"
               onInteractOutside={(e) => {
-                e.preventDefault()
-                setIsDialogOpen(false)
-                setEditingService(null)
+                e.preventDefault();
+                setIsDialogOpen(false);
+                setEditingService(null);
               }}
             >
               <DialogServices
