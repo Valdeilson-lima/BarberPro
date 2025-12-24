@@ -37,6 +37,10 @@ export function DateTimerPicker({
       locale="ptBR"
       minDate={minDate ?? new Date()}
       onChange={handleChange}
+      dateFormat="dd/MM/yyyy"
+      
+
+
     />
   );
 }

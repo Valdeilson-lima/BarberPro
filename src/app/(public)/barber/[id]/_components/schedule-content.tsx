@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import img from "../../../../../../public/hero-image.jpg";
-import { ArrowBigDown, MapPin } from "lucide-react";
+import { ArrowBigDown, ChevronDown, MapPin } from "lucide-react";
 import { Prisma } from "@/generated/prisma/client";
 import { UseAppointmentForm, AppointmentFormData } from "./schedule-form";
 import { formatPhone } from "@/utils/formatPhone";
@@ -41,7 +41,7 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
       <section className="container mx-auto px-4 -mt-16 ">
         <div className="max-w-3xl mx-auto">
           <article className="flex flex-col items-center">
-            <div className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-white">
+            <div className="relative w-38 h-38 rounded-full overflow-hidden border-4 border-white">
               <Image
                 src={barber.image ? barber.image : img}
                 alt="Barber Shop"
@@ -140,7 +140,8 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
                 <FormControl>
                   <DateTimerPicker
                     initialDate={new Date()}
-                    className="w-full rounded-md border p-1.5 border-barber-gold-dark cursor-pointer text-white bg-barber-primary-light"
+                    // Adicionado pr-10 para dar espaço ao ícone
+                    className="w-full rounded-md border p-1.5 border-barber-gold-dark cursor-pointer text-white bg-barber-primary-light pr-10"
                     onChange={(date) => {
                       if (date) {
                         field.onChange(date);
