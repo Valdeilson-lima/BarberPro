@@ -31,6 +31,7 @@ import { Label } from "@/components/ui/label";
 import { DateTimerPicker } from "./date-picker";
 import { ScheduleTimesList } from "./schedule-times-list";
 import { createNewAppointment } from "../_actions/create-appointments";
+import { set } from "zod";
 
 type UserWhithhServiceAndSubscription = Prisma.UserGetPayload<{
   include: {
@@ -254,6 +255,7 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
                     onChange={(date) => {
                       if (date) {
                         field.onChange(date);
+                        setSelectedTime("");
                       }
                     }}
                   />
@@ -273,9 +275,10 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
                 </Label>
                 <FormControl>
                   <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={field.value}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      setSelectedTime("");
+                    }}
                   >
                     <SelectTrigger className="w-full border-2 border-barber-gold-dark bg-barber-primary-light text-white hover:border-barber-gold transition-colors">
                       <SelectValue placeholder="Escolha seu serviço" />
