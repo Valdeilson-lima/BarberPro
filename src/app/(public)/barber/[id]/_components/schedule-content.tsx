@@ -1,25 +1,36 @@
 "use client";
 
+import { useState, useCallback, useEffect, use } from "react";
 import Image from "next/image";
 import img from "../../../../../../public/hero-image.jpg";
-import { ArrowBigDown, ChevronDown, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { Prisma } from "@/generated/prisma/client";
 import { UseAppointmentForm, AppointmentFormData } from "./schedule-form";
 import { formatPhone } from "@/utils/formatPhone";
+import { toast } from "sonner";
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DateTimerPicker } from "./date-picker";
+import { ScheduleTimesList } from "./schedule-times-list";
+import { createNewAppointment } from "../_actions/create-appointments";
 
 type UserWhithhServiceAndSubscription = Prisma.UserGetPayload<{
   include: {
@@ -32,8 +43,101 @@ interface ScheduleContentProps {
   barber: UserWhithhServiceAndSubscription;
 }
 
+export interface TimeSlot {
+  time: string;
+  available: boolean;
+}
+
 export function ScheduleContent({ barber }: ScheduleContentProps) {
   const form = UseAppointmentForm();
+
+  const selectedDate = form.watch("date");
+  const selectedServiceId = form.watch("serviceId");
+
+  const [selectedTime, setSelectedTime] = useState("");
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<TimeSlot[]>([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
+  const [blockedTimes, setBlockedTimes] = useState<string[]>([]);
+
+  // Funcção que busca os horarios bloqueados na API
+  const fetchBlockedTimes = useCallback(
+    async (date: Date): Promise<string[]> => {
+      setLoadingSlots(true);
+      try {
+        const dateString = date.toISOString().split("T")[0];
+
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
+        const url = `${baseUrl}/api/schedule/get-appointments?barberId=${barber.id}&date=${dateString}`;
+
+        const response = await fetch(url);
+
+        const json = await response.json();
+        setLoadingSlots(false);
+        return json.blockedTimes || [];
+      } catch (error) {
+        setLoadingSlots(false);
+        return [];
+      }
+    },
+    [barber.id]
+  );
+
+  useEffect(() => {
+    if (selectedDate) {
+      fetchBlockedTimes(selectedDate).then((blocked) => {
+        setBlockedTimes(blocked);
+
+        const times = barber.times || [];
+
+        const finalSlots = times.map((time) => ({
+          time: time,
+          available: !blocked.includes(time),
+        }));
+
+        setAvailableTimeSlots(finalSlots);
+
+        const stillAvailable = finalSlots.find(
+          (slot) => slot.time === selectedTime && slot.available
+        );
+
+        if (!stillAvailable) {
+          setSelectedTime("");
+        }
+      });
+    }
+  }, [selectedDate, barber.times, fetchBlockedTimes, selectedTime]);
+
+  async function handleRegister(formData: AppointmentFormData) {
+    if (!selectedTime) {
+      toast.error("Por favor, selecione um horário para o agendamento.");
+      return;
+    }
+
+    const response = await createNewAppointment({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      date: formData.date.toISOString(),
+      time: selectedTime,
+      serviceId: formData.serviceId,
+      userId: barber.id,
+    });
+
+    if (response.error) {
+      toast.error(response.error);
+    } else {
+      toast.success("Agendamento criado com sucesso!");
+      form.reset({
+        name: "",
+        email: "",
+        phone: "",
+        date: new Date(),
+        serviceId: "",
+      });
+      setSelectedTime("");
+    }
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-barber-primary ">
@@ -64,7 +168,10 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
       </section>
 
       <Form {...form}>
-        <form className="space-y-6 bg-barber-primary-light p-6 rounded-lg shadow-md mt-8 container mx-auto max-w-3xl">
+        <form
+          className="space-y-6 bg-barber-primary-light p-6 rounded-lg shadow-md mt-8 container mx-auto max-w-3xl"
+          onSubmit={form.handleSubmit(handleRegister)}
+        >
           <FormField
             control={form.control}
             name="name"
@@ -77,7 +184,7 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
                   <Input
                     placeholder="Seu nome completo"
                     {...field}
-                    className="border-barber-gold-dark"
+                    className="border-barber-gold-dark text-white placeholder-white"
                   />
                 </FormControl>
                 <FormMessage />
@@ -96,8 +203,10 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
                 <FormControl>
                   <Input
                     placeholder="Seu e-mail"
+                    type="email"
+                    autoComplete="email"
                     {...field}
-                    className="border-barber-gold-dark"
+                    className="border-barber-gold-dark text-white placeholder-white"
                   />
                 </FormControl>
                 <FormMessage />
@@ -117,7 +226,7 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
                   <Input
                     placeholder="Seu telefone"
                     {...field}
-                    className="border-barber-gold-dark"
+                    className="border-barber-gold-dark text-white placeholder-white"
                     onChange={(e) => {
                       const formattedPhone = formatPhone(e.target.value);
                       field.onChange(formattedPhone);
@@ -153,6 +262,111 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="serviceId"
+            render={({ field }) => (
+              <FormItem>
+                <Label className="text-white text-sm font-semibold block">
+                  Selecione o Serviço
+                </Label>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="w-full border-2 border-barber-gold-dark bg-barber-primary-light text-white hover:border-barber-gold transition-colors">
+                      <SelectValue placeholder="Escolha seu serviço" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-barber-primary border-2 border-barber-gold-dark">
+                      <SelectGroup>
+                        <SelectLabel className="text-barber-gold font-bold text-base py-2">
+                          Nossos Serviços
+                        </SelectLabel>
+                        {barber.services.map((service) => (
+                          <SelectItem
+                            key={service.id}
+                            value={service.id}
+                            className="text-white cursor-pointer hover:bg-barber-gold/20 focus:bg-barber-gold/20 py-3 px-4"
+                          >
+                            <div className="flex items-center justify-between w-full gap-6">
+                              <span className="font-medium">
+                                {service.name}
+                              </span>
+                              <div className="flex items-center gap-3 text-sm whitespace-nowrap">
+                                <span className="text-barber-gold font-bold">
+                                  R${" "}
+                                  {(service.price / 100)
+                                    .toFixed(2)
+                                    .replace(".", ",")}
+                                </span>
+                                <span className="text-gray-400">
+                                  {Math.floor(service.duration / 60)}h
+                                  {service.duration % 60 > 0 &&
+                                    ` ${service.duration % 60}min`}
+                                </span>
+                              </div>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {selectedServiceId && (
+            <div className="space-y-4">
+              <Label className="text-white text-sm font-semibold block">
+                Horarios Disponíveis
+              </Label>
+              <div className="bg-barber-primary p-4 rounded-md">
+                {loadingSlots ? (
+                  <p className="text-white">Carregando horarios...</p>
+                ) : availableTimeSlots.length === 0 ? (
+                  <p className="text-white">Nenhum horario disponível</p>
+                ) : (
+                  <ScheduleTimesList
+                    onSelectTime={(time) => setSelectedTime(time)}
+                    barberTimes={barber.times}
+                    blockedTimes={blockedTimes}
+                    availableTimeSlots={availableTimeSlots}
+                    selectedTime={selectedTime}
+                    selectedDate={selectedDate}
+                    requiredSlots={
+                      barber.services.find((s) => s.id === selectedServiceId)
+                        ? Math.ceil(
+                            barber.services.find(
+                              (s) => s.id === selectedServiceId
+                            )!.duration / 30
+                          )
+                        : 1
+                    }
+                  />
+                )}
+              </div>
+            </div>
+          )}
+
+          {barber.status ? (
+            <Button
+              type="submit"
+              className="w-full bg-barber-gold hover:bg-barber-gold-dark text-white font-bold py-3 px-6 rounded-md transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Agendar Serviço
+            </Button>
+          ) : (
+            <p className="w-full flex justify-center">
+              <strong className="text-white font-bold  bg-barber-gold-light/20 p-4 rounded-md">
+                Barbeiro indisponível para agendamentos no momento.
+              </strong>
+            </p>
+          )}
         </form>
       </Form>
     </div>
