@@ -1,24 +1,38 @@
+import { Button } from "@/components/ui/button";
 import getSession from "@/lib/getSession";
+import { se } from "date-fns/locale";
+import { Calendar } from "lucide-react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
+import { ButtonCopyLink } from "./_components/button-copy-link";
+import { Reminders } from "./_components/remindres/reminders";
 
 export default async function HomePage() {
   const session = await getSession();
- 
 
   if (!session) {
     redirect("/");
-   
   }
-
-  console.log("User session:", session?.user?.createdAt);
 
   return (
     <main>
-      <h1 className="text-2xl font-bold mb-4 text-white">Welcome to the Home Page</h1>
-     <div className="w-full h-150  bg-gray-200 mb-10"></div>
-      <div className="w-full h-150  bg-gray-500 mb-10"></div>
-       <div className="w-full h-150  bg-gray-200 mb-10"></div>
+      <div className="space-x-2 flex items-center justify-end">
+        <Link href={`/barber/${session?.user?.id}`} target="_blank">
+          <Button
+            className="bg-barber-primary-light cursor-pointer hover:bg-barber-gold hover:brightness-110 hover:scale-[1.02] transition-all hover:shadow-md hover:shadow-barber-gold/30 hover:text-black"
+            title="Agendar"
+          >
+            <Calendar className="mr-2 h-5 w-5" />
+            <span>Novo Agendamento</span>
+          </Button>
+        </Link>
+        <ButtonCopyLink userId={session!.user!.id} />
+      </div>
 
+      <section className="grid grid-cols-1 gap-4 lg:grid-cols-2 mt-4">
+        <div className="text-white">agenda</div>
+        <Reminders userId={session!.user!.id} />
+      </section>
     </main>
   );
 }
