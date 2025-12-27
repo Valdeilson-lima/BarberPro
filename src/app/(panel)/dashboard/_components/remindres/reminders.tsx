@@ -4,9 +4,5 @@ import { ReminderList } from "./reminder-list";
 export async function Reminders({ userId }: { userId: string }) {
   const reminders = await getReminders(userId);
 
-  console.log(reminders);
-
-  return (
-    <ReminderList reminders={reminders} />
-  );
+  return <ReminderList reminders={reminders} />;
 }

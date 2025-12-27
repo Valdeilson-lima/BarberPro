@@ -133,17 +133,8 @@ export function DialogServices({
   return (
     <>
       <DialogHeader>
-        <DialogTitle className="text-white text-xl font-bold flex justify-between items-center">
+        <DialogTitle className="text-white text-xl font-bold flex justify-between items-center ">
           {serviceId ? "Editar Serviço" : "Criar Novo Serviço"}
-          <DialogClose asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="bg-barber-gold-dark hover:bg-barber-gold-dark/20 text-white hover:text-white cursor-pointer"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </DialogClose>
         </DialogTitle>
         <DialogDescription className="text-white mt-2 mb-4">
           {serviceId

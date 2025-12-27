@@ -85,7 +85,7 @@ export function ServicesList({ services }: ServicesListProps) {
             </DialogTrigger>
 
             <DialogContent
-              className="sm:max-w-lg bg-barber-primary-dark border-barber-gold-dark/20 border"
+              className="sm:max-w-lg bg-barber-primary-dark border-barber-gold-dark/20 border [&>button]:text-white [&>button]:hover:text-barber-gold"
               onInteractOutside={(e) => {
                 e.preventDefault();
                 setIsDialogOpen(false);
