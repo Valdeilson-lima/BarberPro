@@ -147,6 +147,20 @@ model Appointment {
 | Dialog, Sheet, Collapsible     | Idem                                   | Usados em `DialogServices`, `SidebarDashboard` (Sheet mobile) e seletor de horários. |
 | Select, Form, Card, ScrollArea | Idem                                   | Facilita responsividade e acessibilidade.                                            |
 
+**⚠️ IMPORTANTE - Importações de Componentes UI:**
+
+Sempre importe componentes de UI do diretório local `@/components/ui/*`, nunca diretamente das bibliotecas Radix UI. Os componentes locais incluem estilização e configurações específicas do projeto.
+
+```tsx
+// ✅ CORRETO
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
+
+// ❌ INCORRETO
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { Button } from "@radix-ui/react-button";
+```
+
 ### Componentes de Funcionalidade
 
 | Componente | Path | Props-chave | Responsabilidade |
@@ -266,14 +280,41 @@ Dark mode redefine vars para fundos escuros e bordas translúcidas.
 - Cards do dashboard usam `grid grid-cols-1 lg:grid-cols-2` para adaptar Appointments/Reminders.
 - Listas de horários (`ScheduleTimesList`) usam `grid-cols-4 md:grid-cols-5`, ajustando o número de botões.
 
-## 14. Tratamento de Erros e Validações
+## 14. Erros de Hidratação React
+
+Erros de hidratação ocorrem quando o HTML renderizado no servidor difere do HTML gerado no cliente. Causas comuns:
+
+### Extensões de Navegador (Mais Comum)
+Extensões como Grammarly, gerenciadores de senha e adblockers injetam atributos ou elementos no DOM, causando incompatibilidade.
+
+**Solução:** Adicionar `suppressHydrationWarning` ao elemento `<html>` no layout raiz:
+
+```tsx
+// src/app/layout.tsx
+export default function RootLayout({ children }) {
+  return (
+    <html lang="pt-BR" suppressHydrationWarning>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+### Outras Causas
+- **HTML inválido:** Elementos block dentro de inline (ex: `<div>` dentro de `<p>`).
+- **Data/Hora dinâmica:** `Date.now()`, `Math.random()` ou formatação de datas sem controle de timezone.
+- **Importações incorretas:** Usar Radix UI diretamente em vez dos componentes locais de `@/components/ui`.
+
+**Debug:** Execute o app em modo incógnito para descartar extensões de navegador.
+
+## 15. Tratamento de Erros e Validações
 
 - **Client-side:** RHF + Zod exibem `FormMessage` ao lado dos inputs; máscaras evitam valores inválidos.
 - **Server-side:** todas as actions revalidam os schemas; erros retornam `{ error: string }` e são exibidos via `toast.error`.
 - **Banco:** operações Prisma em try/catch retornam mensagens genéricas para o cliente e `console.error` detalhado no servidor.
 - **API Route:** `/api/schedule/get-appointments` retorna status 400/404/500 conforme cenário.
 
-## 15. Otimizações e Boas Práticas
+## 16. Otimizações e Boas Práticas
 
 - **Server Components + Actions:** evitam APIs REST extras e compartilham sessão com `auth()` diretamente.
 - **Prisma Adapter PG:** melhora a compatibilidade com plataformas serverless mantendo pooling via `@prisma/adapter-pg`.
@@ -282,6 +323,7 @@ Dark mode redefine vars para fundos escuros e bordas translúcidas.
 - **State colocalizado:** hooks personalizados (`useDialogServiceForm`, `useProfileForm`, `useReminderForm`) encapsulam validações e defaults.
 - **UX imediata:** Sonner para feedback, `ButtonCopyLink` usa clipboard API, campos usam máscaras (telefone, moeda) para reduzir erros.
 - **Extensibilidade:** Widgets (`AppointmentsList`) e `Subscription` model já existem para evoluções futuras (planos pagos, lista real de agendamentos).
+- **Importações consistentes:** Sempre use `@/components/ui/*` para componentes de interface, nunca importe diretamente de bibliotecas Radix UI.
 
 ---
 

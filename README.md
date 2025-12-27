@@ -127,6 +127,31 @@ BarberPro é uma plataforma completa de agendamento para barbearias construída 
 | `npx prisma migrate dev` | Sincroniza schema com o banco local.                   |
 | `npx prisma studio`      | Inspeciona dados via UI (necessário configurar antes). |
 
+## 🔧 Solução de Problemas Comuns
+
+### Erro de Hidratação React
+
+Se você encontrar o erro "A tree hydrated but some attributes of the server rendered HTML didn't match", a causa mais comum são extensões de navegador (Grammarly, gerenciadores de senha, etc.) que modificam o DOM.
+
+**Solução:**
+1. Adicione `suppressHydrationWarning` ao elemento `<html>` em [src/app/layout.tsx](src/app/layout.tsx):
+   ```tsx
+   <html lang="pt-BR" suppressHydrationWarning>
+   ```
+2. Teste em modo incógnito/privado para descartar extensões.
+3. Verifique se todos os componentes UI são importados de `@/components/ui/*` e não diretamente do Radix UI.
+
+### Importações de Componentes UI
+
+Sempre importe componentes do diretório local:
+```tsx
+// ✅ Correto
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+// ❌ Incorreto
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+```
+
 ## 📚 Documentação Complementar
 
 - [CONTEXT.md](CONTEXT.md) traz o detalhamento completo de arquitetura, validações, actions e otimizações.
