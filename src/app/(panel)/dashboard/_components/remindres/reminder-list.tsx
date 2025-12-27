@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Reminder } from "@/generated/prisma/client";
 import { Car, Plus, Trash } from "lucide-react";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { deleteReminder } from "../../_actions/delete-reminder";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -45,7 +45,7 @@ export function ReminderList({ reminders }: ReminderListProps) {
     <div className="flex flex-col bg-barber-primary-light rounded-lg gap-3 border-barber-gold/20 border">
       <Card className="bg-barber-primary-light border-0 ">
         <CardHeader className=" border-b border-barber-gold/20 flex items-center justify-between">
-          <CardTitle className="text-white text-lg font-semibold">
+          <CardTitle className="text-white font-semibold text-xl md:text-2xl">
             Lembretes
           </CardTitle>
 
