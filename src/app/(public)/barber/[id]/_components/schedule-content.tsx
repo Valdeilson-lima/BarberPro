@@ -31,7 +31,6 @@ import { Label } from "@/components/ui/label";
 import { DateTimerPicker } from "./date-picker";
 import { ScheduleTimesList } from "./schedule-times-list";
 import { createNewAppointment } from "../_actions/create-appointments";
-import { set } from "zod";
 
 type UserWhithhServiceAndSubscription = Prisma.UserGetPayload<{
   include: {
@@ -129,6 +128,10 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
       toast.error(response.error);
     } else {
       toast.success("Agendamento criado com sucesso!");
+
+      setSelectedTime("");
+      setAvailableTimeSlots([]);
+      setBlockedTimes([]);
       form.reset({
         name: "",
         email: "",
@@ -146,7 +149,7 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
       <section className="container mx-auto px-4 -mt-16 ">
         <div className="max-w-3xl mx-auto">
           <article className="flex flex-col items-center">
-            <div className="relative w-38 h-38 rounded-full overflow-hidden border-4 border-white">
+            <div className="relative w-33 h-33 rounded-full overflow-hidden border-4 border-white">
               <Image
                 src={barber.image ? barber.image : img}
                 alt="Barber Shop"
@@ -170,7 +173,7 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
 
       <Form {...form}>
         <form
-          className="space-y-6 bg-barber-primary-light p-6 rounded-lg shadow-md mt-8 container mx-auto max-w-3xl"
+          className="space-y-6 bg-barber-primary-light p-6 rounded-lg shadow-md mt-8 container mx-auto max-w-3xl mb-3"
           onSubmit={form.handleSubmit(handleRegister)}
         >
           <FormField
@@ -250,7 +253,6 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
                 <FormControl>
                   <DateTimerPicker
                     initialDate={new Date()}
-                    // Adicionado pr-10 para dar espaço ao ícone
                     className="w-full rounded-md border p-1.5 border-barber-gold-dark cursor-pointer text-white bg-barber-primary-light pr-10"
                     onChange={(date) => {
                       if (date) {
@@ -275,12 +277,13 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
                 </Label>
                 <FormControl>
                   <Select
+                    value={field.value}
                     onValueChange={(value) => {
                       field.onChange(value);
                       setSelectedTime("");
                     }}
                   >
-                    <SelectTrigger className="w-full border-2 border-barber-gold-dark bg-barber-primary-light text-white hover:border-barber-gold transition-colors">
+                    <SelectTrigger className="w-full border-2 border-barber-gold-dark bg-barber-primary-light text-white hover:border-barber-gold transition-colors ">
                       <SelectValue placeholder="Escolha seu serviço" />
                     </SelectTrigger>
                     <SelectContent className="bg-barber-primary border-2 border-barber-gold-dark">
@@ -294,18 +297,21 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
                             value={service.id}
                             className="text-white cursor-pointer hover:bg-barber-gold/20 focus:bg-barber-gold/20 py-3 px-4"
                           >
-                            <div className="flex items-center justify-between w-full gap-6">
-                              <span className="font-medium">
+                            <div className="flex items-center justify-between w-full gap-3">
+                              <span className="font-medium text-white">
                                 {service.name}
                               </span>
                               <div className="flex items-center gap-3 text-sm whitespace-nowrap">
+                                <span className="text-white/60">|</span>
                                 <span className="text-barber-gold font-bold">
                                   R${" "}
                                   {(service.price / 100)
                                     .toFixed(2)
                                     .replace(".", ",")}
                                 </span>
-                                <span className="text-gray-400">
+
+                                <span className="text-gray-400"> |</span>
+                                <span className="text-white">
                                   {Math.floor(service.duration / 60)}h
                                   {service.duration % 60 > 0 &&
                                     ` ${service.duration % 60}min`}

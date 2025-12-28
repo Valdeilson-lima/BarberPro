@@ -12,13 +12,25 @@ enum Plan {
   PROFESSIONAL
 }
 
+enum PaymentMethod {
+  CASH
+  CREDIT_CARD
+  DEBIT_CARD
+  PIX
+}
+
 model Appointment {
-  id              String   @id @default(cuid())
-  name            String
-  email           String
-  phone           String
-  appointmentDate DateTime
-  time            String
+  id                 String         @id @default(cuid())
+  name               String
+  email              String
+  phone              String
+  appointmentDate    DateTime
+  time               String
+  status             Boolean        @default(true)
+  paymentMethod      PaymentMethod?
+  completionNotes    String?
+  completedAt        DateTime?
+  cancellationReason String?
 
   serviceId String
   service   Service @relation(fields: [serviceId], references: [id])
@@ -42,12 +54,12 @@ model Reminder {
 }
 
 model Service {
-  id       String  @id @default(cuid())
-  name     String
+  id          String  @id @default(cuid())
+  name        String
   description String
-  duration Int
-  price    Int
-  status   Boolean @default(true)
+  duration    Int
+  price       Int
+  status      Boolean @default(true)
 
   userId       String
   user         User          @relation(fields: [userId], references: [id])
@@ -71,20 +83,20 @@ model Subscription {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  address       String?
-  phone         String?
+  id               String          @id @default(cuid())
+  name             String?
+  email            String          @unique
+  emailVerified    DateTime?
+  image            String?
+  address          String?
+  phone            String?
   timeZone         String?
   stripeCustomerId String?
-  times            String[] @default([])
-  status   Boolean @default(true)
-  accounts      Account[]
-  sessions      Session[]
-  Authenticator Authenticator[]
+  times            String[]        @default([])
+  status           Boolean         @default(true)
+  accounts         Account[]
+  sessions         Session[]
+  Authenticator    Authenticator[]
 
   subscriptions Subscription?
   services      Service[]

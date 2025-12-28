@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
+import { tr } from "date-fns/locale";
 
 export const GET = auth(async function GET(request) {
   if (!request.auth) {
@@ -28,17 +29,20 @@ export const GET = auth(async function GET(request) {
     const startOfDay = new Date(year, month - 1, day, 0, 0, 0, 0);
     const endOfDay = new Date(year, month - 1, day, 23, 59, 59, 999);
 
-    const appointments = await prisma.appointment.findFirst({
+    const appointments = await prisma.appointment.findMany({
       where: {
         userId: barberId,
         appointmentDate: {
           gte: startOfDay,
           lte: endOfDay,
         },
+        status: true,
       },
       include: {
         service: true,
+
       },
+     
     });
 
     return NextResponse.json(appointments);

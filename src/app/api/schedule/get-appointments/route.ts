@@ -39,6 +39,7 @@ export async function GET(request: NextRequest) {
           gte: startOfDay,
           lte: endOfDay,
         },
+        status: true,
       },
       include: { service: true },
     });
