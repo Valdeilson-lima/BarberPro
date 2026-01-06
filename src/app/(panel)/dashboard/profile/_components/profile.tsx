@@ -58,6 +58,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
   const router = useRouter();
   const [slectedhours, setSelectedHours] = useState<string[]>(user.times ?? []);
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { update } = useSession();
 
   const form = useProfileForm({
@@ -105,6 +106,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
   );
 
   async function onSubmit(values: ProfileFormData) {
+    setIsLoading(true);
     const extractValue = exractPhoneNumber(values.phone || "");
     values.phone = extractValue;
 
@@ -117,9 +119,11 @@ export function ProfileContent({ user }: ProfileContentProps) {
       times: slectedhours,
     });
     if (response.error) {
+      setIsLoading(false);
       toast.error(response.error, { closeButton: true });
       return;
     } else {
+      setIsLoading(false);
       toast.success(response.data, { closeButton: true });
     }
   }
@@ -128,7 +132,6 @@ export function ProfileContent({ user }: ProfileContentProps) {
     await signOut();
     await update();
     router.replace("/");
-
   }
 
   return (
@@ -233,8 +236,8 @@ export function ProfileContent({ user }: ProfileContentProps) {
                       </FormLabel>
                       <FormControl>
                         <Select
+                          value={field.value}
                           onValueChange={field.onChange}
-                          defaultValue={field.value ? "active" : "inactive"}
                         >
                           <SelectTrigger className="w-full bg-barber-primary-dark text-white border-barber-gold-dark/20">
                             <SelectValue placeholder="Selecione o status" />
@@ -361,7 +364,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
                   className="bg-barber-gold-dark text-white border-barber-gold-dark/20 w-full hover:bg-barber-gold-dark/50 cursor-pointer hover:text-white"
                   variant={"outline"}
                 >
-                  Salvar Alterações
+                  {isLoading ? "Salvando..." : "Salvar Alterações"}
                 </Button>
               </div>
             </CardContent>

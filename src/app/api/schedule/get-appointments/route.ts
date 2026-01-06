@@ -16,8 +16,10 @@ export async function GET(request: NextRequest) {
   try {
     const [year, month, day] = dateParam.split("-").map(Number);
 
-    const startOfDay = new Date(year, month - 1, day, 0, 0, 0);
-    const endOfDay = new Date(year, month - 1, day, 23, 59, 59, 999);
+    const startOfDay = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+    const endOfDay = new Date(Date.UTC(year, month - 1, day, 23, 59, 59, 999));
+    console.log("Start of Day (UTC):", startOfDay.toISOString());
+    console.log("End of Day (UTC):", endOfDay.toISOString());
 
     const user = await prisma.user.findFirst({
       where: {

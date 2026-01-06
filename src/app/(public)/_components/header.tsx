@@ -19,13 +19,17 @@ import logo from "../../../../public/logo.svg";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { data: session, status } = useSession();
-  console.log("Session data:", session);
 
-  const navItems = [{ label: "Veja as Barbearias disponíveis", href: "#barbearias" }];
+  const navItems = [
+    { label: "Veja as Barbearias disponíveis", href: "#barbearias" },
+  ];
 
   async function handleLogin() {
+    setIsLoading(true);
     await handleRegister("github");
+    setIsLoading(false);
   }
 
   const NavLinks = () => (
@@ -38,22 +42,24 @@ export function Header() {
           className="text-white hover:text-barber-gold transition-colors font-medium cursor-pointer px-4 py-1.5 text-sm md:text-base"
         >
           <Link href={item.href} className="text-base font-medium">
-            
             {item.label}
           </Link>
         </Button>
       ))}
 
       {status === "loading" ? (
-        <span className="text-white text-center">Carregando...</span>
+        <span className="text-white px-4 py-1.5 text-sm md:text-base">
+          Carregando...
+        </span>
       ) : session ? (
-        
         <Link
           href="/dashboard"
           className="text-white bg-primary/90 px-4 py-1.5 rounded-md hover:text-barber-gold hover:bg-primary/90 transition-colors font-medium text-center text-sm md:text-base cursor-pointer"
-        > 
-          <LayoutDashboard className="w-4 h-4 mr-2 inline-block" />
-          Acessar Meu Dashboard
+        >
+          <>
+            <LayoutDashboard className="w-4 h-4 mr-2 inline-block" />
+            Acessar meu Painel
+          </>
         </Link>
       ) : (
         <Button

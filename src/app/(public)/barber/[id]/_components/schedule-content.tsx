@@ -59,12 +59,21 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [blockedTimes, setBlockedTimes] = useState<string[]>([]);
 
+  // ✅ Função auxiliar para formatar data sem conversão de timezone
+  const formatDateToLocalString = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   // Funcção que busca os horarios bloqueados na API
   const fetchBlockedTimes = useCallback(
     async (date: Date): Promise<string[]> => {
       setLoadingSlots(true);
       try {
-        const dateString = date.toISOString().split("T")[0];
+        // ✅ Usar formatação local em vez de toISOString
+        const dateString = formatDateToLocalString(date);
 
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -114,11 +123,25 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
       return;
     }
 
+    // ✅ Revalidar disponibilidade antes de enviar
+    const currentBlocked = await fetchBlockedTimes(formData.date);
+    if (currentBlocked.includes(selectedTime)) {
+      toast.error(
+        "Este horário acabou de ser reservado. Por favor, escolha outro."
+      );
+      setBlockedTimes(currentBlocked);
+      setSelectedTime("");
+      return;
+    }
+
+    // ✅ Enviar data no formato local YYYY-MM-DD
+    const dateString = formatDateToLocalString(formData.date);
+
     const response = await createNewAppointment({
       name: formData.name,
       email: formData.email,
       phone: formData.phone,
-      date: formData.date.toISOString(),
+      date: dateString, // ✅ Agora envia apenas a data local
       time: selectedTime,
       serviceId: formData.serviceId,
       userId: barber.id,
@@ -126,6 +149,11 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
 
     if (response.error) {
       toast.error(response.error);
+
+      // ✅ Atualizar horários disponíveis após erro
+      const blocked = await fetchBlockedTimes(formData.date);
+      setBlockedTimes(blocked);
+      setSelectedTime("");
     } else {
       toast.success("Agendamento criado com sucesso!");
 
@@ -139,9 +167,41 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
         date: new Date(),
         serviceId: "",
       });
-      setSelectedTime("");
     }
   }
+
+  // ✅ Revalidar horários a cada 30 segundos
+  useEffect(() => {
+    if (selectedDate && selectedServiceId) {
+      const interval = setInterval(() => {
+        fetchBlockedTimes(selectedDate).then((blocked) => {
+          setBlockedTimes(blocked);
+
+          const times = barber.times || [];
+          const finalSlots = times.map((time) => ({
+            time: time,
+            available: !blocked.includes(time),
+          }));
+
+          setAvailableTimeSlots(finalSlots);
+
+          // Limpar seleção se não estiver mais disponível
+          if (selectedTime && blocked.includes(selectedTime)) {
+            setSelectedTime("");
+            toast.warning("O horário selecionado não está mais disponível.");
+          }
+        });
+      }, 30000); // 30 segundos
+
+      return () => clearInterval(interval);
+    }
+  }, [
+    selectedDate,
+    selectedServiceId,
+    barber.times,
+    fetchBlockedTimes,
+    selectedTime,
+  ]);
 
   return (
     <div className="min-h-screen flex flex-col bg-barber-primary ">

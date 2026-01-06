@@ -49,6 +49,7 @@ export async function updateProfile(formData: FormSchema) {
     });
 
     revalidatePath("/dashboard/profile");
+    revalidatePath("/"); 
 
     return {
       data: "Perfil da barbearia atualizado com sucesso",

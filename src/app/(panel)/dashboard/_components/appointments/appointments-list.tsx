@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, Eye } from "lucide-react";
 import { AppointmentDetailDialog } from "./appointment-detail-dialog";
 import { AppointmentFinishDialog } from "./appointment-finish-dialog";
+import { ButtonPickerAppointmentDate } from "../appointments/button-date";
 
 type AppointmentWithService = Prisma.AppointmentGetPayload<{
   include: { service: true };
@@ -102,7 +103,7 @@ export function AppointmentsList({ times }: AppointmentsListProps) {
         <CardTitle className="text-white font-semibold text-xl md:text-2xl">
           Agenda
         </CardTitle>
-        <button className="text-white">Ver todos</button>
+        <ButtonPickerAppointmentDate />
       </CardHeader>
 
       <CardContent>

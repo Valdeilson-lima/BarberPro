@@ -143,18 +143,18 @@ export function AppointmentDetailDialog({
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-gray-400">Data</p>
                   <p className="font-semibold">
-                    {format(
-                      new Date(appointment.appointmentDate),
-                      "dd/MM/yyyy",
-                      {
-                        locale: ptBR,
-                      }
-                    )}
+                    {new Intl.DateTimeFormat("pt-BR", {
+                      timeZone: "UTC",
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                    }).format(new Date(appointment.appointmentDate))}
                   </p>
                   <p className="text-xs text-gray-400 capitalize">
-                    {format(new Date(appointment.appointmentDate), "EEEE", {
-                      locale: ptBR,
-                    })}
+                    {new Intl.DateTimeFormat("pt-BR", {
+                      timeZone: "UTC",
+                      weekday: "long",
+                    }).format(new Date(appointment.appointmentDate))}
                   </p>
                 </div>
               </div>
