@@ -8,6 +8,7 @@ import { Prisma } from "@/generated/prisma/client";
 import { UseAppointmentForm, AppointmentFormData } from "./schedule-form";
 import { formatPhone } from "@/utils/formatPhone";
 import { toast } from "sonner";
+import { Loading } from "@/components/ui/loading";
 
 import {
   Form,
@@ -31,6 +32,7 @@ import { Label } from "@/components/ui/label";
 import { DateTimerPicker } from "./date-picker";
 import { ScheduleTimesList } from "./schedule-times-list";
 import { createNewAppointment } from "../_actions/create-appointments";
+import { format } from "date-fns";
 
 type UserWhithhServiceAndSubscription = Prisma.UserGetPayload<{
   include: {
@@ -94,7 +96,9 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
 
   useEffect(() => {
     if (selectedDate) {
-      fetchBlockedTimes(selectedDate).then((blocked) => {
+      // Converte string YYYY-MM-DD para Date
+      const date = selectedDate ? new Date(selectedDate + "T00:00:00") : new Date();
+      fetchBlockedTimes(date).then((blocked) => {
         setBlockedTimes(blocked);
 
         const times = barber.times || [];
@@ -124,7 +128,8 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
     }
 
     // ✅ Revalidar disponibilidade antes de enviar
-    const currentBlocked = await fetchBlockedTimes(formData.date);
+    const date = new Date(formData.date + "T00:00:00");
+    const currentBlocked = await fetchBlockedTimes(date);
     if (currentBlocked.includes(selectedTime)) {
       toast.error(
         "Este horário acabou de ser reservado. Por favor, escolha outro."
@@ -134,14 +139,11 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
       return;
     }
 
-    // ✅ Enviar data no formato local YYYY-MM-DD
-    const dateString = formatDateToLocalString(formData.date);
-
     const response = await createNewAppointment({
       name: formData.name,
       email: formData.email,
       phone: formData.phone,
-      date: dateString, // ✅ Agora envia apenas a data local
+      date: formData.date, // ✅ Já está no formato YYYY-MM-DD
       time: selectedTime,
       serviceId: formData.serviceId,
       userId: barber.id,
@@ -151,7 +153,7 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
       toast.error(response.error);
 
       // ✅ Atualizar horários disponíveis após erro
-      const blocked = await fetchBlockedTimes(formData.date);
+      const blocked = await fetchBlockedTimes(date);
       setBlockedTimes(blocked);
       setSelectedTime("");
     } else {
@@ -164,7 +166,7 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
         name: "",
         email: "",
         phone: "",
-        date: new Date(),
+        date: "",
         serviceId: "",
       });
     }
@@ -174,7 +176,8 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
   useEffect(() => {
     if (selectedDate && selectedServiceId) {
       const interval = setInterval(() => {
-        fetchBlockedTimes(selectedDate).then((blocked) => {
+        const date = new Date(selectedDate + "T00:00:00");
+        fetchBlockedTimes(date).then((blocked) => {
           setBlockedTimes(blocked);
 
           const times = barber.times || [];
@@ -312,11 +315,13 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
                 </Label>
                 <FormControl>
                   <DateTimerPicker
-                    initialDate={new Date()}
+                    initialDate={field.value ? new Date(field.value + "T00:00:00") : new Date()}
+                    minDate={new Date()}
                     className="w-full rounded-md border p-1.5 border-barber-gold-dark cursor-pointer text-white bg-barber-primary-light pr-10"
                     onChange={(date) => {
                       if (date) {
-                        field.onChange(date);
+                        const dateString = formatDateToLocalString(date);
+                        field.onChange(dateString);
                         setSelectedTime("");
                       }
                     }}
@@ -396,7 +401,13 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
               </Label>
               <div className="bg-barber-primary p-4 rounded-md">
                 {loadingSlots ? (
-                  <p className="text-white">Carregando horarios...</p>
+                  <div className="flex justify-center py-4">
+                    <Loading
+                      size="md"
+                      variant="dots"
+                      text="Carregando horários..."
+                    />
+                  </div>
                 ) : availableTimeSlots.length === 0 ? (
                   <p className="text-white">Nenhum horario disponível</p>
                 ) : (
@@ -406,7 +417,7 @@ export function ScheduleContent({ barber }: ScheduleContentProps) {
                     blockedTimes={blockedTimes}
                     availableTimeSlots={availableTimeSlots}
                     selectedTime={selectedTime}
-                    selectedDate={selectedDate}
+                    selectedDate={selectedDate ? new Date(selectedDate + "T00:00:00") : new Date()}
                     requiredSlots={
                       barber.services.find((s) => s.id === selectedServiceId)
                         ? Math.ceil(

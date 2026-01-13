@@ -1,4 +1,4 @@
-"uae client";
+"use client";
 import { useState } from "react";
 import Datepicker, { registerLocale } from "react-datepicker";
 import { ptBR } from "date-fns/locale";

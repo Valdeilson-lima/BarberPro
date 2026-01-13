@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Loading } from "@/components/ui/loading";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { Prisma } from "@/generated/prisma/client";
@@ -109,8 +110,12 @@ export function AppointmentsList({ times }: AppointmentsListProps) {
       <CardContent>
         <ScrollArea className="h-[calc(100vh-20rem)] lg:h-[calc(100vh-15rem)] pr-4">
           {isLoading ? (
-            <div className="text-white text-center bg-barber-primary p-2 border border-barber-gold/20 rounded-md">
-              Carregando Agendamentos...
+            <div className="flex flex-col items-center justify-center py-8">
+              <Loading
+                size="lg"
+                variant="barber"
+                text="Carregando Agendamentos..."
+              />
             </div>
           ) : (
             <div className="space-y-4">

@@ -33,12 +33,8 @@ export async function createNewAppointment(
   }
 
   try {
-    const selectedDate = new Date(formData.date);
-    const year = selectedDate.getFullYear();
-    const month = selectedDate.getMonth();
-    const day = selectedDate.getDate();
-
-    const appointmentDate = new Date(Date.UTC(year, month, day, 0, 0, 0, 0));
+    // ✅ Parse direto da string no formato YYYY-MM-DD como UTC
+    const appointmentDate = new Date(formData.date + "T00:00:00.000Z");
    
 
     const newAppointment = await prisma.appointment.create({
