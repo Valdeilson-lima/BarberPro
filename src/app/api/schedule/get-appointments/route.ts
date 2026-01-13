@@ -25,10 +25,6 @@ export async function GET(request: NextRequest) {
     const endOfDay = new Date(dateUTC);
     endOfDay.setUTCHours(23, 59, 59, 999);
 
-    console.log("Date param:", dateParam);
-    console.log("Start of Day (UTC):", startOfDay.toISOString());
-    console.log("End of Day (UTC):", endOfDay.toISOString());
-
     const user = await prisma.user.findFirst({
       where: {
         id: barberId,
