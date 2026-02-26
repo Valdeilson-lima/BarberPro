@@ -91,15 +91,15 @@ export function ReminderList({ reminders }: ReminderListProps) {
               reminders.map((reminder) => (
                 <article
                   key={reminder.id}
-                  className="bg-barber-primary/50 rounded-lg border border-barber-gold/20 p-3 flex flex-wrap justify-between items-center py-2 mb-4"
+                  className="bg-barber-primary/50 rounded-lg border border-barber-gold/20 p-3  py-2 mb-4 gap-2 flex items-center justify-between"
                 >
-                  <p className="text-white flex-1 min-w-0 wrap-break-word">
+                  <p className="text-white text-sm md:text-base flex-1 min-w-0 wrap-anywhere whitespace-pre-line">
                     {reminder.description}
                   </p>
                   <Button
                     variant="ghost"
                     size={"sm"}
-                    className="p-0 w-8 h-8 rounded-full bg-barber-primary hover:bg-barber-gold/20 text-white hover:scale-105 transition-all hover:text-white cursor-pointer"
+                    className="p-0 w-8 h-8 rounded-full bg-barber-primary hover:bg-barber-gold/20 text-white hover:scale-105 transition-all hover:text-white cursor-pointer shrink-0"
                     title="Excluir Lembrete"
                     onClick={() => handleDeleteReminder(reminder.id)}
                   >
