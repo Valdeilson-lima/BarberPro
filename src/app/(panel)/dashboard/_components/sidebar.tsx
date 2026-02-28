@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { clsx } from "clsx";
 import {
+  BarChart3,
   Banknote,
   CalendarCheck,
   ChevronLeft,
@@ -93,6 +94,14 @@ export function SidebarDashboard({ children }: { children: React.ReactNode }) {
             />
 
             <SidebarItem
+              href="/dashboard/insights"
+              label="Insights"
+              pathname={pathname}
+              isCollapsed={isDesktopCollapsed}
+              icon={<BarChart3 className="w-5 h-5" />}
+            />
+
+            <SidebarItem
               href="/dashboard/profile"
               label="Meu Perfil"
               pathname={pathname}
@@ -130,6 +139,14 @@ export function SidebarDashboard({ children }: { children: React.ReactNode }) {
                 pathname={pathname}
                 isCollapsed={isDesktopCollapsed}
                 icon={<Scissors className="w-5 h-5" />}
+              />
+
+              <SidebarItem
+                href="/dashboard/insights"
+                label="Insights"
+                pathname={pathname}
+                isCollapsed={isDesktopCollapsed}
+                icon={<BarChart3 className="w-5 h-5" />}
               />
 
               <span className="text-sm text-white/40 font-medium mt-1 uppercase">
@@ -212,6 +229,15 @@ export function SidebarDashboard({ children }: { children: React.ReactNode }) {
                   pathname={pathname}
                   isCollapsed={false}
                   icon={<Scissors className="w-5 h-5" />}
+                  onClose={() => setIsMobileOpen(false)}
+                />
+
+                <SidebarItem
+                  href="/dashboard/insights"
+                  label="Insights"
+                  pathname={pathname}
+                  isCollapsed={false}
+                  icon={<BarChart3 className="w-5 h-5" />}
                   onClose={() => setIsMobileOpen(false)}
                 />
 
