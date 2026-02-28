@@ -14,7 +14,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { Prisma } from "@/generated/prisma/client";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Eye } from "lucide-react";
+import { CalendarDays, CheckCircle, Clock3, Eye } from "lucide-react";
 import { AppointmentDetailDialog } from "./appointment-detail-dialog";
 import { AppointmentFinishDialog } from "./appointment-finish-dialog";
 import { ButtonPickerAppointmentDate } from "../appointments/button-date";
@@ -98,13 +98,35 @@ export function AppointmentsList({ times }: AppointmentsListProps) {
     }
   }
 
+  const occupiedSlots = Object.keys(occupantMap).length;
+  const availableSlots = Math.max(times.length - occupiedSlots, 0);
+
   return (
-    <Card className="bg-barber-primary-light border border-barber-gold/20 ">
-      <CardHeader className="border-b border-barber-gold/20 flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-white font-semibold text-xl md:text-2xl">
-          Agenda
-        </CardTitle>
-        <ButtonPickerAppointmentDate />
+    <Card className="bg-barber-primary-light border border-barber-gold/20">
+      <CardHeader className="border-b border-barber-gold/20 pb-4 gap-4">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div className="space-y-1">
+            <CardTitle className="text-white font-semibold text-xl md:text-2xl flex items-center gap-2">
+              <CalendarDays className="h-5 w-5 text-barber-gold" />
+              Agenda
+            </CardTitle>
+            <CardDescription className="text-gray-300">
+              Controle os horários do dia e finalize atendimentos com rapidez.
+            </CardDescription>
+          </div>
+          <ButtonPickerAppointmentDate />
+        </div>
+
+        <div className="grid grid-cols-2 gap-2">
+          <div className="rounded-md border border-barber-gold/20 bg-barber-primary/60 p-2">
+            <p className="text-xs text-gray-400">Horários ocupados</p>
+            <p className="text-base font-semibold text-white">{occupiedSlots}</p>
+          </div>
+          <div className="rounded-md border border-barber-gold/20 bg-barber-primary/60 p-2">
+            <p className="text-xs text-gray-400">Horários disponíveis</p>
+            <p className="text-base font-semibold text-white">{availableSlots}</p>
+          </div>
+        </div>
       </CardHeader>
 
       <CardContent>
@@ -125,20 +147,21 @@ export function AppointmentsList({ times }: AppointmentsListProps) {
                 return occupant ? (
                   <Card
                     key={slot}
-                    className="bg-barber-secondary-light border border-barber-gold/20"
+                    className="bg-barber-secondary-light border border-barber-gold/20 hover:border-barber-gold/50 transition-colors"
                   >
                     <CardHeader>
                       <CardTitle className="text-white font-semibold text-sm lg:text-base">
                         {slot} - {occupant.service.name}
                       </CardTitle>
-                      <CardDescription className="text-white">
+                      <CardDescription className="text-gray-200">
                         {occupant.name} - {occupant.phone}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="flex flex-col md:flex-row md:justify-between md:items-center">
-                      <span className="text-barber-gold">
+                      <div className="inline-flex w-fit items-center gap-1 rounded-full border border-barber-gold/30 bg-barber-primary/40 px-2 py-1 text-barber-gold text-xs">
+                        <Clock3 className="h-3 w-3" />
                         Duração: {occupant.service.duration} min
-                      </span>
+                      </div>
 
                       <div className="flex flex-row justify-between md:justify-end items-center gap-2 mt-4 md:mt-0 w-full md:w-auto">
                         <Button
@@ -164,10 +187,10 @@ export function AppointmentsList({ times }: AppointmentsListProps) {
                 ) : (
                   <Card
                     key={slot}
-                    className="bg-barber-secondary-light border border-barber-gold/20"
+                    className="bg-barber-secondary-light/60 border border-barber-gold/10"
                   >
-                    <CardContent>
-                      <span className="text-white font-semibold text-sm lg:text-base">
+                    <CardContent className="flex items-center">
+                      <span className="text-gray-300 font-medium text-sm lg:text-base">
                         {slot} - Disponível
                       </span>
                     </CardContent>

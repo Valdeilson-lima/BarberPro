@@ -4,6 +4,9 @@ import { ServiceContent } from "./_components/service-content";
 import { Loading } from "./_components/loading";
 import { Suspense } from "react";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function Services() {
   const session = await getSession();
   if (!session) {

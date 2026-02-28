@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { PaymentMethod } from "@/generated/prisma/enums";
+import { formatValue } from "@/utils/formatValue";
 
 type Service = {
   id: string;
@@ -36,6 +37,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ArrowLeft,
   Banknote,
+  CalendarClock,
   CheckCircle,
   CreditCard,
   Loader2,
@@ -193,6 +195,22 @@ export function AppointmentFinishDialog({
           </DialogDescription>
         </DialogHeader>
 
+        <div className="rounded-lg border border-barber-gold/15 bg-barber-primary p-3">
+          <p className="text-xs text-gray-400">Agendamento selecionado</p>
+          <div className="mt-2 space-y-1">
+            <p className="font-semibold text-white">{appointment.service.name}</p>
+            <div className="flex items-center justify-between text-sm">
+              <span className="inline-flex items-center gap-1 text-gray-300">
+                <CalendarClock className="h-4 w-4 text-barber-gold" />
+                ID: {appointment.id.slice(0, 8)}
+              </span>
+              <span className="font-semibold text-barber-gold">
+                {formatValue(appointment.service.price)}
+              </span>
+            </div>
+          </div>
+        </div>
+
         {/* Escolha inicial */}
         {!action && (
           <div className="grid gap-4 py-4">
@@ -270,7 +288,7 @@ export function AppointmentFinishDialog({
               <Textarea
                 id="notes"
                 placeholder="Ex: Cliente solicitou corte específico..."
-                className="min-h-25 bg-barber-primary border-barber-gold/20 text-white placeholder:text-gray-500"
+                className="min-h-[120px] bg-barber-primary border-barber-gold/20 text-white placeholder:text-gray-500"
                 {...completeForm.register("notes")}
               />
               {completeForm.formState.errors.notes && (
@@ -328,7 +346,7 @@ export function AppointmentFinishDialog({
               <Textarea
                 id="reason"
                 placeholder="Ex: Cliente não compareceu, remarcado para outra data..."
-                className="min-h-37.5 bg-barber-primary border-barber-gold/20 text-white placeholder:text-gray-500"
+                className="min-h-[150px] bg-barber-primary border-barber-gold/20 text-white placeholder:text-gray-500"
                 {...cancelForm.register("reason")}
               />
               {cancelForm.formState.errors.reason && (

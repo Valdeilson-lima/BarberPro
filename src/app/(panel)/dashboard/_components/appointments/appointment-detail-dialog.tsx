@@ -9,15 +9,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { formatValue } from "@/utils/formatValue";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import {
   Calendar,
   Clock,
   Mail,
   Phone,
   User,
-  DollarSign,
   FileText,
 } from "lucide-react";
 
@@ -53,6 +50,23 @@ export function AppointmentDetailDialog({
         </DialogHeader>
 
         <div className="space-y-6 mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="rounded-lg border border-barber-gold/15 bg-barber-primary p-3">
+              <p className="text-xs text-gray-400">Horário</p>
+              <p className="text-lg font-semibold text-white">{appointment.time}</p>
+            </div>
+            <div className="rounded-lg border border-barber-gold/15 bg-barber-primary p-3">
+              <p className="text-xs text-gray-400">Serviço</p>
+              <p className="font-semibold text-white">{appointment.service.name}</p>
+            </div>
+            <div className="rounded-lg border border-barber-gold/15 bg-barber-primary p-3">
+              <p className="text-xs text-gray-400">Valor</p>
+              <p className="font-semibold text-white">
+                {formatValue(appointment.service.price)}
+              </p>
+            </div>
+          </div>
+
           <div className="space-y-3">
             <h3 className="text-lg font-semibold text-barber-gold border-b border-barber-gold/20 pb-2">
               Cliente
@@ -97,33 +111,27 @@ export function AppointmentDetailDialog({
               <div className="flex items-start gap-3 p-3 rounded-lg bg-barber-primary border border-barber-gold/10">
                 <FileText className="w-5 h-5 text-barber-gold shrink-0 mt-0.5" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-400">Nome do Serviço</p>
-                  <p className="font-semibold">{appointment.service.name}</p>
+                  <p className="text-xs text-gray-400">Descrição do serviço</p>
                   {appointment.service.description && (
                     <p className="text-sm text-gray-400 mt-1">
                       {appointment.service.description}
                     </p>
                   )}
+                  {!appointment.service.description && (
+                    <p className="text-sm text-gray-500 mt-1">
+                      Sem descrição informada.
+                    </p>
+                  )}
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3">
                 <div className="flex items-center gap-3 p-3 rounded-lg bg-barber-primary border border-barber-gold/10">
                   <Clock className="w-5 h-5 text-barber-gold shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-gray-400">Duração</p>
                     <p className="font-semibold">
                       {appointment.service.duration} min
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-barber-primary border border-barber-gold/10">
-                  <DollarSign className="w-5 h-5 text-barber-gold shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs text-gray-400">Valor</p>
-                    <p className="font-semibold">
-                      {formatValue(appointment.service.price)}
                     </p>
                   </div>
                 </div>
@@ -137,7 +145,7 @@ export function AppointmentDetailDialog({
               Agendamento
             </h3>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3">
               <div className="flex items-center gap-3 p-3 rounded-lg bg-barber-primary border border-barber-gold/10">
                 <Calendar className="w-5 h-5 text-barber-gold shrink-0" />
                 <div className="flex-1 min-w-0">
@@ -156,14 +164,6 @@ export function AppointmentDetailDialog({
                       weekday: "long",
                     }).format(new Date(appointment.appointmentDate))}
                   </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-barber-primary border border-barber-gold/10">
-                <Clock className="w-5 h-5 text-barber-gold shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-400">Horário</p>
-                  <p className="font-semibold text-lg">{appointment.time}</p>
                 </div>
               </div>
             </div>

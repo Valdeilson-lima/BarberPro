@@ -1,7 +1,5 @@
-import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -9,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { subscriptionPlans } from "@/utils/plans";
-import { Crown, Sparkles } from "lucide-react";
+import { CheckCircle2, Crown, Sparkles } from "lucide-react";
 import { SubscriptionButton } from "./subscription-button";
 
 export function GrisdPlans() {
@@ -23,8 +21,8 @@ export function GrisdPlans() {
             key={index}
             className={`relative overflow-hidden transition-all hover:shadow-xl bg-barber-primary ${
               isProfessional
-                ? "border-2 border-barber-gold shadow-lg shadow-barber-gold/20"
-                : "border-barber-gold/30"
+                ? "border-2 border-barber-gold shadow-lg shadow-barber-gold/25 hover:-translate-y-1"
+                : "border-barber-gold/30 hover:border-barber-gold/55"
             }`}
           >
             {isProfessional && (
@@ -34,7 +32,7 @@ export function GrisdPlans() {
               </div>
             )}
 
-            <CardHeader className={isProfessional ? "pt-15" : ""}>
+            <CardHeader className={isProfessional ? "pt-15 space-y-2" : "space-y-2"}>
               <div className="flex items-center gap-2 mb-2">
                 {isProfessional && (
                   <Crown className="w-6 h-6 text-barber-gold" />
@@ -50,7 +48,11 @@ export function GrisdPlans() {
               <CardDescription className="text-base text-gray-300">
                 {plan.description}
               </CardDescription>
+              <div className="inline-flex w-fit rounded-full border border-barber-gold/20 bg-barber-primary-light px-2.5 py-1 text-xs text-gray-200">
+                {isProfessional ? "Mais escolhido por barbearias em crescimento" : "Ideal para começar"}
+              </div>
             </CardHeader>
+
             <CardContent>
               <div className="mb-6 p-4 bg-barber-primary-light rounded-lg border border-barber-gold/20">
                 <div className="flex items-baseline gap-2">
@@ -66,13 +68,17 @@ export function GrisdPlans() {
                 <span className="text-lg text-gray-400 line-through">
                   De R$ {plan.olPrice.toFixed(2)}
                 </span>
+                <p className="text-xs text-emerald-300 mt-1">
+                  Economia de R$ {(plan.olPrice - plan.price).toFixed(2)} por mês
+                </p>
               </div>
+
               <ul className="space-y-3">
                 {plan.features.map((feature, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <div
-                      className={`mt-1 w-1.5 h-1.5 rounded-full ${
-                        isProfessional ? "bg-barber-gold" : "bg-white"
+                    <CheckCircle2
+                      className={`mt-0.5 h-4 w-4 shrink-0 ${
+                        isProfessional ? "text-barber-gold" : "text-gray-200"
                       }`}
                     />
                     <span className="text-sm text-gray-200">{feature}</span>
@@ -80,8 +86,11 @@ export function GrisdPlans() {
                 ))}
               </ul>
             </CardContent>
-            < CardFooter>
-              <SubscriptionButton type={plan.id === "PROFESSIONAL" ? "PROFESSIONAL" : "BASIC"} />
+
+            <CardFooter>
+              <SubscriptionButton
+                type={plan.id === "PROFESSIONAL" ? "PROFESSIONAL" : "BASIC"}
+              />
             </CardFooter>
           </Card>
         );

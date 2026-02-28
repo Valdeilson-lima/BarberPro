@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { error } from "console";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { canPermission } from "@/utils/permissions/canPermission";
 
 const formSchema = z.object({
   name: z
@@ -26,6 +27,13 @@ export async function createNewService(formData: FormSchema) {
   if (!session?.user?.id) {
     return {
       error: "Usuário não autenticado.",
+    };
+  }
+
+  const permission = await canPermission({ type: "service" });
+  if (!permission.hasPermision) {
+    return {
+      error: "Assine um plano para começar.",
     };
   }
 
