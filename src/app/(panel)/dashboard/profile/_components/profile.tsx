@@ -57,6 +57,7 @@ import { toast } from "sonner";
 import { formatPhone, exractPhoneNumber } from "@/utils/formatPhone";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { AvatarProfile } from "./profile-avatar";
 
 type UserWithSubscriptions = UserGetPayload<{
   include: {
@@ -155,7 +156,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
     <div className="mx-auto space-y-4">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <Card className="bg-gradient-to-br from-barber-primary-light to-barber-primary shadow-lg rounded-lg border-barber-gold-dark/20 border">
+          <Card className="bg-linear-to-br from-barber-primary-light to-barber-primary shadow-lg rounded-lg border-barber-gold-dark/20 border">
             <CardHeader className="space-y-4">
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div className="space-y-1">
@@ -182,14 +183,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
             <CardContent className="space-y-6">
               <div className="flex flex-col gap-4 items-center md:flex-row md:items-center md:justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="relative rounded-full h-24 w-24 overflow-hidden border-2 border-barber-gold/40">
-                    <Image
-                      src={user.image ? user.image : img}
-                      fill
-                      alt="Imagem de perfil"
-                      className="rounded-full object-cover"
-                    />
-                  </div>
+                  <AvatarProfile avatarUrl={user.image } userId={user.id} />
                   <div>
                     <h2 className="text-white text-xl font-semibold">{user.name}</h2>
                     <p className="text-barber-gold-light text-sm">{user.email}</p>

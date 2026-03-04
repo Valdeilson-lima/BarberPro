@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { BookDashed, LayoutDashboard, LogIn, Menu } from "lucide-react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { handleRegister } from "../_actions/login";
+import { signIn } from "next-auth/react";
 import Image from "next/image";
 import logo from "../../../../public/logo.svg";
 
@@ -28,7 +28,7 @@ export function Header() {
 
   async function handleLogin() {
     setIsLoading(true);
-    await handleRegister("github");
+    await signIn("google", { callbackUrl: "/dashboard" });
     setIsLoading(false);
   }
 
