@@ -10,7 +10,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { BookDashed, LayoutDashboard, LogIn, Menu } from "lucide-react";
+import { LayoutDashboard, LogIn, Menu } from "lucide-react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { signIn } from "next-auth/react";
@@ -23,7 +23,8 @@ export function Header() {
   const { data: session, status } = useSession();
 
   const navItems = [
-    { label: "Veja as Barbearias disponíveis", href: "#barbearias" },
+    { label: "Barbearias", href: "#barbearias" },
+    { label: "Como funciona", href: "#como-funciona" },
   ];
 
   async function handleLogin() {
@@ -39,7 +40,7 @@ export function Header() {
           onClick={() => setIsMenuOpen(false)}
           key={item.href}
           asChild
-          className="text-white hover:text-barber-gold transition-colors font-medium cursor-pointer px-4 py-1.5 text-sm md:text-base"
+          className="bg-transparent text-white transition-colors font-medium cursor-pointer px-3 py-1.5 text-sm md:text-base hover:bg-transparent hover:text-barber-gold"
         >
           <Link href={item.href} className="text-base font-medium">
             {item.label}
@@ -74,7 +75,7 @@ export function Header() {
   );
 
   return (
-    <header className="fixed top-0 left-0 z-50 right-0 bg-barber-primary shadow-barber-gold/90 shadow-sm py-4 px-6">
+    <header className="fixed top-0 left-0 z-50 right-0 border-b border-barber-gold/20 bg-barber-primary/95 py-4 px-6 shadow-barber-gold/20 shadow-sm backdrop-blur-md">
       <div className="container mx-auto flex items-center justify-between">
         <Link href="/">
           <Image

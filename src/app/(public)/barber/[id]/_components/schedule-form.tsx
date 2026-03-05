@@ -1,7 +1,9 @@
 "use client";
-import { email, z } from "zod";
+
+import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
 export const appointmentSchema = z.object({
   name: z
     .string()
@@ -12,11 +14,12 @@ export const appointmentSchema = z.object({
   phone: z
     .string()
     .min(11, { message: "O telefone deve ter pelo menos 11 dígitos" }),
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, { 
-    message: "Data inválida. Use o formato YYYY-MM-DD" 
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
+    message: "Data inválida. Use o formato YYYY-MM-DD",
   }),
   serviceId: z.string().min(1, { message: "O serviço é obrigatório" }),
 });
+
 export type AppointmentFormData = z.infer<typeof appointmentSchema>;
 
 export function UseAppointmentForm() {

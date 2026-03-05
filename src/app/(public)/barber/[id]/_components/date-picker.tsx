@@ -1,9 +1,9 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import Datepicker, { registerLocale } from "react-datepicker";
 import { ptBR } from "date-fns/locale";
 import "react-datepicker/dist/react-datepicker.css";
-
 
 registerLocale("ptBR", ptBR);
 
@@ -22,12 +22,16 @@ export function DateTimerPicker({
 }: DateTimerPickerProps) {
   const [startDate, setStartDate] = useState(initialDate || new Date());
 
-  function handleChange(date: Date | null) {
-    if (date) {
-      console.log(date);
-      setStartDate(date);
-      onChange(date);
+  useEffect(() => {
+    if (initialDate) {
+      setStartDate(initialDate);
     }
+  }, [initialDate]);
+
+  function handleChange(date: Date | null) {
+    if (!date) return;
+    setStartDate(date);
+    onChange(date);
   }
 
   return (
@@ -38,9 +42,10 @@ export function DateTimerPicker({
       minDate={minDate ?? new Date()}
       onChange={handleChange}
       dateFormat="dd/MM/yyyy"
-      
-
-
+      popperClassName="barber-datepicker-popper"
+      calendarClassName="barber-datepicker"
+      showPopperArrow={false}
+      wrapperClassName="w-full"
     />
   );
 }

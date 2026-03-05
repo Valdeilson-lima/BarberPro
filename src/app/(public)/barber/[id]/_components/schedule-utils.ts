@@ -7,9 +7,6 @@ export function isToday(date: Date) {
   );
 }
 
-/**
- * Verificar se o horário selecionado está no passado
- */
 export function isSlotinThePast(slotTime: string) {
   const [slothour, slotMinute] = slotTime.split(":").map(Number);
   const now = new Date();
@@ -24,26 +21,24 @@ export function isSlotinThePast(slotTime: string) {
   return false;
 }
 
-
 export function isSlotSequenceAvailable(
   startTime: string,
   requiredSlots: number,
   allSlots: string[],
-  blockedSlots: string[]
+  blockedSlots: string[],
 ) {
-    const startIndex = allSlots.indexOf(startTime);
-    
-    if (startIndex === -1 || startIndex + requiredSlots > allSlots.length) {
-        return false;
-    }
+  const startIndex = allSlots.indexOf(startTime);
 
-    for (let i = startIndex; i < startIndex + requiredSlots; i++) {
-        const slotTime = allSlots[i];
+  if (startIndex === -1 || startIndex + requiredSlots > allSlots.length) {
+    return false;
+  }
 
-        if (blockedSlots.includes(slotTime)) {
-            console.log(`Slot ${slotTime} is blocked.`);
-            return false;
-        }
+  for (let i = startIndex; i < startIndex + requiredSlots; i++) {
+    const slotTime = allSlots[i];
+
+    if (blockedSlots.includes(slotTime)) {
+      return false;
     }
-    return true;
+  }
+  return true;
 }

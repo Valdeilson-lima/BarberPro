@@ -4,6 +4,7 @@ import "./globals.css";
 import { SessionAuthProvider } from "../components/session.auth";
 import { Toaster } from "@/components/ui/sonner";
 import { QueryClientContext } from "@/providers/queryclient";
+import { getSiteUrl, seoConfig } from "@/lib/seo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,10 +16,56 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = getSiteUrl();
+
 export const metadata: Metadata = {
-  title: "BarberPro - Agendamento de Serviços para Barbearias",
-  description:
-    "Conectando você às melhores barbearias da sua região. Agende seu horário com facilidade e descubra serviços de qualidade perto de você.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: seoConfig.defaultTitle,
+    template: seoConfig.titleTemplate,
+  },
+  description: seoConfig.defaultDescription,
+  applicationName: seoConfig.siteName,
+  keywords: seoConfig.defaultKeywords,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    siteName: seoConfig.siteName,
+    title: seoConfig.defaultTitle,
+    description: seoConfig.defaultDescription,
+    url: "/",
+    images: [
+      {
+        url: seoConfig.defaultOgImage,
+        width: 1200,
+        height: 630,
+        alt: "BarberPro - Agendamento de Serviços",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: seoConfig.defaultTitle,
+    description: seoConfig.defaultDescription,
+    images: [seoConfig.defaultOgImage],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
+  },
 };
 
 export default function RootLayout({
