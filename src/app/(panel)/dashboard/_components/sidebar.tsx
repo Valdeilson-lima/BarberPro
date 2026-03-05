@@ -40,40 +40,39 @@ export function SidebarDashboard({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen w-full">
       <aside
         className={clsx(
-           "hidden md:flex  flex-col bg-barber-primary-light border-r border-barber-gold h-full transition-all duration-300 md:fixed",
+          "hidden md:flex  flex-col bg-barber-primary-light border-r border-barber-gold h-full transition-all duration-300 md:fixed",
           {
             "w-20": isDesktopCollapsed,
             "w-64": !isDesktopCollapsed,
-          }
+          },
         )}
       >
         <div className="mb-6 mt-4">
           {!isDesktopCollapsed && (
-            <Image
-              src={logo}
-              alt="BarberPRÓ Logo"
-              priority
-              quality={100}
-              className="w-48 h-auto mx-auto"
-              
-            />
+            <Link href="/" className="flex items-center justify-center">
+              <Image
+                src={logo}
+                alt="BarberPRÓ Logo"
+                priority
+                quality={100}
+                className="w-48 h-auto mx-auto"
+              />
+            </Link>
           )}
-
-          
         </div>
 
         <Button
-            onClick={() => setIsDesktopCollapsed(!isDesktopCollapsed)}
-            variant="ghost"
-            size="icon"
-            className="bg-gray-100 hover:bg-gray-200 text-zinc-900 self-end mb-2 mr-5 p-2 rounded-full cursor-pointer"
-          >
-            {isDesktopCollapsed ? (
-              <ChevronRight className="w-5 h-5" />
-            ) : (
-              <ChevronLeft className="w-5 h-5" />
-            )}
-          </Button>
+          onClick={() => setIsDesktopCollapsed(!isDesktopCollapsed)}
+          variant="ghost"
+          size="icon"
+          className="bg-gray-100 hover:bg-gray-200 text-zinc-900 self-end mb-2 mr-5 p-2 rounded-full cursor-pointer"
+        >
+          {isDesktopCollapsed ? (
+            <ChevronRight className="w-5 h-5" />
+          ) : (
+            <ChevronLeft className="w-5 h-5" />
+          )}
+        </Button>
 
         {isDesktopCollapsed && (
           <nav className="flex flex-col gap-3 p-4 text-base">
@@ -179,7 +178,7 @@ export function SidebarDashboard({ children }: { children: React.ReactNode }) {
           {
             "md:ml-20": isDesktopCollapsed,
             "md:ml-64": !isDesktopCollapsed,
-          }
+          },
         )}
       >
         <header className="flex items-center justify-between px-2 md:px-6 h-14 z-10 border-b border-barber-gold md:hidden sticky top-0 bg-barber-primary-light">
@@ -301,7 +300,7 @@ function SidebarItem({
               isActive,
             "text-gray-300 hover:text-white": !isActive,
             "justify-center": isCollapsed,
-          }
+          },
         )}
       >
         <span

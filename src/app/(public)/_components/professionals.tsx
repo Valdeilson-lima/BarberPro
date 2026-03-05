@@ -1,23 +1,20 @@
 "'use client'";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import image01 from "../../../../public/imagem01.jpg";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { User } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
+import { PremiumBadge } from "./premium-badge";
+
+type UserWithSubscriptions = Prisma.UserGetPayload<{
+  include: { subscriptions: true };
+}>;
 
 interface ProfessionalsProps {
-  barbers: User[];
+  barbers: UserWithSubscriptions[];
 }
 
 export function Professionals({ barbers }: ProfessionalsProps) {
@@ -43,6 +40,10 @@ export function Professionals({ barbers }: ProfessionalsProps) {
                       fill
                       className="object-cover "
                     />
+                    {barber.subscriptions?.status === "active" &&
+                      barber.subscriptions?.plan === "PROFESSIONAL" && (
+                        <PremiumBadge />
+                      )}
                   </div>
                 </div>
 
