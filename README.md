@@ -158,4 +158,4 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 - O schema Prisma atualizado está em [prisma/schema.prisma](prisma/schema.prisma).
 - Componentes críticos ficam documentados em seus respectivos diretórios `_components`.
 
-Se encontrar qualquer divergência entre este README e o contexto técnico, priorize o que está descrito em [CONTEXT.md](CONTEXT.md) e atualize ambos os arquivos para manter o alinhamento do time.
+
